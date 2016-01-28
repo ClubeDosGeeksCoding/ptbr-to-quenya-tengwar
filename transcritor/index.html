@@ -1,0 +1,22 @@
+<html>
+<head>
+	<title>TRANSCRITOR</title>
+	<!-- <link rel="stylesheet" type="text/css" href="http://cdn.shopify.com/s/files/1/0212/3526/t/23/assets/tengwar-annatar.css?6505577255137288023"> -->
+	<link rel="stylesheet" type="text/css" href="css/tengwar.css">
+</head>
+<body>
+	<input type="text" id="texto" id-result="resultado">
+	<br>
+	<div id="resultado" class="tengwar annatar rendered">
+		A
+	</div>
+	<script src="http://code.jquery.com/jquery-1.12.0.min.js"></script>
+	<script type="text/javascript" src="js/cdg_quenya.js"></script>
+	<script type="text/javascript">
+	$(document).ready(function(){
+		$('#texto').cdgQuenya();
+	})
+		
+	</script>
+</body>
+</html>
