@@ -1,0 +1,15 @@
+1 - TRATAR DITONGOS
+2 - TRATA NAZALIZAÇÂO
+	<vogal> m ou n <consoante>
+	ditongos nasais (-ãe, -õe, -ão)
+3 - Substituir consoantes não seguida por vogal. Exemplo: CAIR, o R não é seguido por vogal;
+4 - Substituir consoantes de excessão:
+	ch, nh, rr, lh, 
+	s no meio ou final da palavra i
+	s no inicio da palavra 8
+	z no inicio da palavra ou precedito de consoante k
+	z precedido de vogal , (virgula)
+4 - Substitui silabas de <consoante><vogal>
+	H no inicio da palavra é excluido
+	Q está sempre com U (qu), então tem seu próprio significado
+5 - Substituir vogais sozinhas

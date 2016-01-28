@@ -14,26 +14,14 @@
 
 	function tengwar(str){
 		str = str.toLowerCase();
-		//Ver caractres em links
-		var codes = [
-			['pa','qC'],
-			['pe','qR'],
-			['p\xE9','q\xD4'],
-			['pi','q='],
-			['po','qH'],
-			['p\xF3','q\xDA'],
-			['pu','qU'],
-			['p','q'],
-			['ro','6H'],
-			['ba','wC'],
-			['ba','wC'],
 
-		];
+		var consoantes_pt = ('bcdfgjklmnprtvw').split('');
+		var consoantes_qu = ('wa2esfajt5q61rr').split('');
 
-		for(var i = 0; i < codes.length; i++){
-			// str = str.replace(codes[i][0],codes[i][1]);
-			str = str.split(codes[i][0]).join(codes[i][1]);
-		}
+		//Tratar ditongos
+		// Estou aqui -> LEMBRAR DE ADICIONAR DITONGOS ACENTUÁDO saúde
+		var ditongos_pt = ['ai','au','ei','eu','ia','ie','io','iu','oi','ou','ua','ue','ui','uo'];
+		var ditongos_qu = ['lC','.C','lR','.R','hC','hR','']
 
 		return str;
 	}
