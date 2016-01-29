@@ -1,10 +1,18 @@
+/*!
+ * Transcrito Português-brasileira para Quenya Tengwar Tabs v1.0.0 (https://github.com/ClubeDosGeeksCoding/ptbr-to-quenya-tengwar)
+ *
+ * Copyright 2015 Jayr Alencar (http://jayralencar.com.br) & Clube dos Geeks (//clubedosgeeks.com.br)
+ * Licensed under the The MIT License (MIT) (https://github.com/ClubeDosGeeksCoding/ptbr-to-quenya-tengwar/blob/master/LICENSE)
+ */
+
 (function ( $ ) {
 	$.fn.cdgQuenya = function(options){
 		var settings = $.extend({
 		}, options );
 
 		var result_element = $('#'+$(this).attr('id-result'));
-
+		value = $(this).val();
+		result_element.html(tengwar(value));
 		$(this).keyup(function(){
 			value = $(this).val();
 			result_element.html(tengwar(value));

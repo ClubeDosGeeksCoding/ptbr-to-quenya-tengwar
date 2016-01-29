@@ -1,7 +1,8 @@
 1 - TRATAR DITONGOS
+	começar pelos ditongos nasais (-ãe, -õe, -ão)
 2 - TRATA NAZALIZAÇÂO
 	<vogal> m ou n <consoante>
-	ditongos nasais (-ãe, -õe, -ão)
+	
 3 - Substituir consoantes não seguida por vogal. Exemplo: CAIR, o R não é seguido por vogal;
 4 - Substituir consoantes de excessão:
 	ch, nh, rr, lh, 
