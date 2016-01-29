@@ -7,7 +7,7 @@
 
 		$(this).keyup(function(){
 			value = $(this).val();
-			result_element.text(tengwar(value));
+			result_element.html(tengwar(value));
 		})
 
 	}
@@ -58,8 +58,8 @@
 
 		//Exceções
 		//ch, nh, rr, lh, 
-		var execoes_pt = ['ch', 'nh', 'rr', 'lh','gu','qu'];
-		var execoes_qu = ['d' , 'g',  '7',  'm', 'x', 'z'];
+		var execoes_pt = ['ch', 'nh', 'rr', 'lh','gu','qu','/'];
+		var execoes_qu = ['d' , 'g',  '7',  'm', 'x', 'z','ü'];
 
 		//Tratamento de inicio
 		var inicio_pt = ['h','s', 'z','g'];
@@ -72,7 +72,7 @@
 		//numeros
 		var numeros_pt = ('0123456789').split('');
 		// var numeros_qu = ('ð ñ ò ó ô õ ö ÷ ø ù').split('');
-		var numeros_qu = ['\xF0','\xF1','\xF2','\xF3','\xF4','\xF5','\xF6','\u00F7','\xF8','\xF9'];
+		var numeros_qu = ['\xF0','\xF1','\xF2','\xF3','\xF4','\xF5','\xF6','\xF7','\xF8','\xF9'];
 
 		var partes = str.split('');
 		if(partes[0]=='h'){
@@ -294,6 +294,11 @@
 				// if(){
 
 				// }
+			}
+
+			if(partes[i]=='\n'){
+				nova+='<br/>'
+				continue;
 			}
 			
 			nova += partes[i];
