@@ -29,7 +29,11 @@
 		var substituir = [
 			['\xE7','s'], // Ç
 			['y','i'],
-			['en','e']
+			[/\ben/,'e'],
+			[/\xE0|\xE1|\xE2/, 'a'],
+			[/\xEA|&/, 'e'],
+			[/\xF4|\xF2/,'o'],
+			[/\xFA|\xFB/,'u']
 		];
 
 		for(var i = 0 ; i < substituir.length ; i++){
@@ -59,14 +63,39 @@
 
 		//Tratamento de inicio
 		var inicio_pt = ['h','s', 'z','g'];
-		var inicio_qu = ['', '8',',','f']
+		var inicio_qu = ['', '8',',','f'];
+
+		//Pontuação
+		var pontuacao_pt = [',','.','!',	'?',  ';',':','(',')','-','+'];
+		var pontuacao_qu = ['=','-','\xC1','\xC0','-','=','=','=','=','='];
+
+		//numeros
+		var numeros_pt = ('0123456789').split('');
+		// var numeros_qu = ('ð ñ ò ó ô õ ö ÷ ø ù').split('');
+		var numeros_qu = ['\xF0','\xF1','\xF2','\xF3','\xF4','\xF5','\xF6','\u00F7','\xF8','\xF9'];
 
 		var partes = str.split('');
+		if(partes[0]=='h'){
+			partes.splice(0, 1);
+		}
+
 		var nova = '';
 
 		for(var i = 0 ; i < partes.length; i++){
 			if(partes[i]==' '){
 				nova+='&nsb';
+				continue;
+			}
+
+			//Numeros
+			if(numeros_pt.indexOf(partes[i])>=0){
+				nova += numeros_qu[numeros_pt.indexOf(partes[i])];
+				continue;
+			}
+
+			//Pontuacao
+			if(pontuacao_pt.indexOf(partes[i])>=0){
+				nova += pontuacao_qu[pontuacao_pt.indexOf(partes[i])];
 				continue;
 			}
 
