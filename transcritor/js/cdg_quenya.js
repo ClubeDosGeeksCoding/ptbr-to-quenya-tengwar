@@ -15,18 +15,27 @@
 	function tengwar(str){
 		str = str.toLowerCase();
 
-		//Tratar ditongos nasais e mais coisas pra substituir
-		var ditongo_nasais = [
-			['\xE3e','aim'],
-			['\xF5e','oim'],
-			['\xE3o', 'aum'],
+		// coisas pra substituir
+		var partes = str.split(' ');
+		var resposta = '';
+		for(var i = 0 ; i < partes.length; i++){
+			resposta +=traduz(partes[i])+' ';
+		}
+
+		return resposta;
+	}
+
+	function traduz(str){
+		var substituir = [
 			['\xE7','s'], // Ç
-			['y','i']
+			['y','i'],
+			['en','e']
 		];
 
-		for(var i = 0 ; i < ditongo_nasais.length ; i++){
-			str = str.split(ditongo_nasais[i][0]).join(ditongo_nasais[i][1])
+		for(var i = 0 ; i < substituir.length ; i++){
+			str = str.split(substituir[i][0]).join(substituir[i][1])
 		}
+
 
 		
 
@@ -49,13 +58,63 @@
 		var execoes_qu = ['d' , 'g',  '7',  'm', 'x', 'z'];
 
 		//Tratamento de inicio
-		var inicio_pt = ['h','s', 'z'];
-		var inicio_qu = ['', '8','k']
+		var inicio_pt = ['h','s', 'z','g'];
+		var inicio_qu = ['', '8',',','f']
 
 		var partes = str.split('');
 		var nova = '';
 
 		for(var i = 0 ; i < partes.length; i++){
+			if(partes[i]==' '){
+				nova+='&nsb';
+				continue;
+			}
+
+			//Ditongos nasais
+			if(partes.length>2 && i+2<partes.length){
+				if(partes[i]+partes[i+1]+partes[i+2]=='\xE3os'){
+					nova+='.CiP';
+					i+=2;
+					continue;
+				}
+			}
+			if(partes.length>2 && i+2<partes.length){
+				if(partes[i]+partes[i+1]+partes[i+2]=='\xE3es'){
+					nova+='lCiP';
+					i+=2;
+					continue;
+				}
+			}
+			if(partes.length>2 && i+2<partes.length){
+				if(partes[i]+partes[i+1]+partes[i+2]=='\xF5es'){
+					nova+='lNiP';
+					i+=2;
+					continue;
+				}
+			}
+			if(partes.length>1 && i+1<partes.length){
+				if(partes[i]+partes[i+1]=='\xE3o'){
+					nova+='.Cb';
+					i++;
+					continue;
+				}
+			}
+			if(partes.length>1 && i+1<partes.length){
+				if(partes[i]+partes[i+1]=='\xE3e'){
+					nova+='b';
+					i++;
+					continue;
+				}
+			}
+			if(partes.length>1 && i+1<partes.length){
+				if(partes[i]+partes[i+1]=='\xF5e'){
+					nova+='lNb';
+					i++;
+					continue;
+				}
+			}
+
+
 			if(i==0){
 				if(inicio_pt.indexOf(partes[i])>=0){
 					nova += inicio_qu[inicio_pt.indexOf(partes[i])];
@@ -72,9 +131,9 @@
 
 			if(partes[i]=='z'){
 				if(vogais_pt.indexOf(partes[i-1])>-1){
-					nova+=',';
-				}else{
 					nova+='k';
+				}else{
+					nova+=',';
 				}
 				continue;
 			}
@@ -82,7 +141,7 @@
 			if(consoantes_pt.indexOf(partes[i])>=0){
 				nova += consoantes_qu[consoantes_pt.indexOf(partes[i])];
 				//SAIR
-				if((i+3) < partes.length && (vogais_pt.indexOf(partes[i+1])>=0 && (vogais_pt.indexOf(partes[i+2])>=0) &&  consoantes_pt.indexOf(partes[i+3])>=0)){
+				if((i+3) < partes.length && (vogais_pt.indexOf(partes[i+1])>=0 && (vogais_pt.indexOf(partes[i+2])>=0) &&  ('r').indexOf(partes[i+3])>=0)){
 					nova += vogais_qu[vogais_pt.indexOf(partes[i+1])];
 					nova += '`'+vogais_qu[vogais_pt.indexOf(partes[i+2])];
 					nova += consoantes_qu[consoantes_pt.indexOf(partes[i+3])];
@@ -110,10 +169,7 @@
 			//Vogais
 			if(vogais_pt.indexOf(partes[i])>=0){
 
-				if(i==0){
-					nova+='`'+vogais_qu[vogais_pt.indexOf(partes[i])];
-					continue;
-				}
+				
 
 				if(i>2){
 					if(execoes_pt.indexOf(partes[i-2]+partes[i-1])>=0){
@@ -124,22 +180,51 @@
 				if((i+3)<partes.length){
 					//NASAIS
 					if((partes[i+1]=='m' || partes[i+1]=='n') && consoantes_pt.indexOf(partes[i+2])>-1 ) {
+
 						//te nto
 						//qR qFN
 						//vogal
+						if(i==0){
+							nova='`';
+						}
 						nova += vogais_qu[vogais_pt.indexOf(partes[i])];
-						//Consoante
-						nova += consoantes_qu[consoantes_pt.indexOf(partes[i+2])]+'F';
-						//vogal
-						nova += vogais_qu[vogais_pt.indexOf(partes[i+3])];
+						
+						if(vogais_pt.indexOf(partes[i+3])>=0){
+							//Consoante
+							nova += consoantes_qu[consoantes_pt.indexOf(partes[i+2])]+'P';
+							//vogal
+							nova += vogais_qu[vogais_pt.indexOf(partes[i+3])];	
+						}else{
+							//Consoante
+							nova += consoantes_qu[consoantes_pt.indexOf(partes[i+2])];
+							//vogal
+							nova += consoantes_qu[consoantes_pt.indexOf(partes[i+3])];	
+						}
+						
 						i+=3;
 						continue;
 					}
 
 				}
 
+				if(i==0){
+					//Ditongos
+					if((i+1)<partes.length &&  vogais_pt.indexOf(partes[i+1]) >= 0){
+						if(ditongos_pt.indexOf(partes[i]+partes[i+1])>=0){
+							nova += ditongos_qu[ditongos_pt.indexOf(partes[i]+partes[i+1])]
+							i++;
+							continue;
+						}else{
+							
+						}
+						
+					}
+					nova+='`'+vogais_qu[vogais_pt.indexOf(partes[i])];
+					continue;
+				}
+
 				//sair hiato
-				if(((i+2) < partes.length) && (consoantes_pt.indexOf(partes[i-1])>=0 || inicio_pt.indexOf(partes[i-1]) >= 0 ) && (vogais_pt.indexOf(partes[i]) >= 0 && vogais_pt.indexOf(partes[i+1]) >= 0 )  && consoantes_pt.indexOf(partes[i+2]) >=0 ){
+				if(((i+2) < partes.length) && (consoantes_pt.indexOf(partes[i-1])>=0 || inicio_pt.indexOf(partes[i-1]) >= 0 ) && (vogais_pt.indexOf(partes[i]) >= 0 && vogais_pt.indexOf(partes[i+1]) >= 0 )  && ('r').indexOf(partes[i+2]) >=0 ){
 					nova += vogais_qu[vogais_pt.indexOf(partes[i])];
 					nova += '`'+vogais_qu[vogais_pt.indexOf(partes[i+1])];
 					nova += consoantes_qu[consoantes_pt.indexOf(partes[i+2])];
@@ -163,12 +248,12 @@
 				//Ditongos
 				if((i+1)<partes.length &&  vogais_pt.indexOf(partes[i+1]) >= 0){
 					if(ditongos_pt.indexOf(partes[i]+partes[i+1])>=0){
-						nova += ditongos_qu[ditongos_pt.indexOf(partes[i]+partes[i+1])]
+						nova += ditongos_qu[ditongos_pt.indexOf(partes[i]+partes[i+1])];
 					}else{
 						nova += vogais_qu[vogais_pt.indexOf(partes[i])];
 						nova += vogais_qu[vogais_pt.indexOf(partes[i+1])];
 					}
-					i+=2;
+					i++;
 					continue;
 				}
 
@@ -181,14 +266,9 @@
 
 				// }
 			}
-
-
-
-			
 			
 			nova += partes[i];
 		}
-
 		return nova;
 	}
 
