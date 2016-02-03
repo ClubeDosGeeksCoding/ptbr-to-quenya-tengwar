@@ -34,6 +34,22 @@
 	}
 
 	function traduz(str){
+
+		var nomesPT = [
+			'Finwë',
+			'galadriel',
+			'gandalf'
+		];
+		var nomesQu = [
+			'eG5nR',
+			'x#j#7T`Vj',
+			'x#2#je'
+		];
+
+		if(nomesPT.indexOf(str)>=0){
+			return nomesQu[nomesPT.indexOf(str)]
+		}
+
 		var substituir = [
 			['\xE7','s'], // Ç
 			['y','i'],
