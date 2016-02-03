@@ -41,7 +41,8 @@
 			[/\xE0|\xE1|\xE2/, 'a'],
 			[/\xEA|&/, 'e'],
 			[/\xF4|\xF2/,'o'],
-			[/\xFA|\xFB/,'u']
+			[/\xFA|\xFB/,'u'],
+			[/\xED|\xEC/,'i']
 		];
 
 		for(var i = 0 ; i < substituir.length ; i++){
