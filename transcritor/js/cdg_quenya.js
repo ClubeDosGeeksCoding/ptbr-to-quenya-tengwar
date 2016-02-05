@@ -97,6 +97,7 @@
 		}
 
 		//2 - Substituição de caracteres que não  tem aplicação na transcrição, por exemplo Ç por S
+		// AQUI é usado Expressões Regulares . Ex /\xE0|\xE1|\xE2/ se equivale a \xE0 ou \xE1 ou \xE2, ele vai substituir se tiver 1 ou outro.
 		var substituir = [
 			['\xE7','s'], // Ç
 			['y','i'],
@@ -116,7 +117,6 @@
 		
 
 		//Tratar ditongos
-		// Estou aqui -> LEMBRAR DE ADICIONAR DITONGOS ACENTUÁDO saúde
 		var ditongos_pt = ['ai','au','ei','eu','ia','ie','io','iu','oi','ou','ua','ue','ui','uo'];
 		var ditongos_qu = ['lC','.C','lR','.R','hC','hR','hN','hM','lN','.N','nC','nR','nB','nN'];
 
