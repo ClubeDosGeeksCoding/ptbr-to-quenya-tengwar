@@ -3,9 +3,19 @@
  *
  * Copyright 2015 Jayr Alencar (http://jayralencar.com.br) & Clube dos Geeks (//clubedosgeeks.com.br)
  * Licensed under the The MIT License (MIT) (https://github.com/ClubeDosGeeksCoding/ptbr-to-quenya-tengwar/blob/master/LICENSE)
+
+ * Para que tudo funcione bem use a fonte Tengwar Annatar (http://www.dafont.com/pt/tengwar-annatar.font)
+ ** Em alguns casos uso HexCode, como por exemplo nos acentos ou Ç. Ex.: ô = \xF4 , veja (http://www.javascripter.net/faq/accentedcharacters.htm)
  */
 
 (function ( $ ) {
+	/*
+	@name: cdgQuenya
+	@type: jQuery plugin
+	@author: jayralencar
+	@discription: Inicializa o plugin e fica escutando o evento keyup pra asssim traduzir
+	@returns: o elemento
+	*/
 	$.fn.cdgQuenya = function(options){
 		var settings = $.extend({
 		}, options );
@@ -16,27 +26,63 @@
 		$(this).keyup(function(){
 			value = $(this).val();
 			result_element.html(tengwar(value));
-		})
+		});
+
+		return this;
 
 	}
 
+	/*
+	@name: tengwar
+	@type: method
+	@author: jayralencar
+	@discription: Divide a string em partes para transcrever
+	@input: texto comum
+	@returns: texto transcrito para Tengwar 
+	*/
 	function tengwar(str){
 		str = str.toLowerCase();
-
-		// coisas pra substituir
 		var partes = str.split(' ');
 		var resposta = '';
 		for(var i = 0 ; i < partes.length; i++){
 			resposta +=traduz(partes[i])+' ';
 		}
-
 		return resposta;
 	}
 
+	/*
+	@name: traduz
+	@type: method
+	@author: jayralencar
+	@discripion: Faz a transcrição de palavra para tengwar annatar
+	@input: texto comum - apenas 1 palavra
+	@returns: palavra transcrita para Tengwar
+	*/
 	function traduz(str){
+		/*
+		Este método é dividido por blocos:
+		1 - Transcrição de nomes próprios de personagens da obra de J.R.R. Tolkien
+		2 - Substituição de caracteres que não  tem aplicação na transcrição, por exemplo Ç por S
+		3 - Divisão da palavra em partes com split();
+		4 - Exclusão da letra H se estiver no início da palavar, por exemplo Hora fica ora
+		5 - Loop de substituição, também divido em partes:
+			5.1 - Substituição de números
+			5.2 - Substituição de pontuação
+			5.3 - Substituição de ditongo nasais (ão, ãe, õe)
+			5.4 - Substituição de excessões de inicio de palavra (s, z, g, h)
+			5.5 - Substituição de excessões de meio de palavra (ch, nh, rr, lh, gu, qu, /)
+			5.6 - Tratamento da consoante Z, pois difere se acompanhado por vogal ou consoante
+			5.7 - Tratamento de consoantes, com tratamento para Hiato ex.: sair
+			5.8 - Tratamento de vogais, que é dividido por partes:
+				5.8.1 - Silabas nasais <vogal>+</m/ ou /n/> +<consoante>
+				5.8.2 - Tratamento de ditongos não nasais (ai, ou, au, ao, etc)
+				5.8.3 - Tratamento de hiatos
+		6 - Tratamento de \n (ENTER)
+		*/
 
+		//1 - Transcrição de nomes próprios de personagens da obra de J.R.R. Tolkien
 		var nomesPT = [
-			'Finwë',
+			'finw\xF6',
 			'galadriel',
 			'gandalf'
 		];
@@ -50,6 +96,7 @@
 			return nomesQu[nomesPT.indexOf(str)]
 		}
 
+		//2 - Substituição de caracteres que não  tem aplicação na transcrição, por exemplo Ç por S
 		var substituir = [
 			['\xE7','s'], // Ç
 			['y','i'],
@@ -99,32 +146,37 @@
 		// var numeros_qu = ('ð ñ ò ó ô õ ö ÷ ø ù').split('');
 		var numeros_qu = ['\xF0','\xF1','\xF2','\xF3','\xF4','\xF5','\xF6','\xF7','\xF8','\xF9'];
 
+		// 3 - Divisão da palavra em partes com split();
 		var partes = str.split('');
+
+		// 4 - Exclusão da letra H se estiver no início da palavar, por exemplo Hora fica ora
 		if(partes[0]=='h'){
 			partes.splice(0, 1);
 		}
 
 		var nova = '';
 
+
+		// 5 - Loop de substituição, também divido em partes:
 		for(var i = 0 ; i < partes.length; i++){
 			if(partes[i]==' '){
 				nova+='&nsb';
 				continue;
 			}
 
-			//Numeros
+			//5.1 - Substituição de números
 			if(numeros_pt.indexOf(partes[i])>=0){
 				nova += numeros_qu[numeros_pt.indexOf(partes[i])];
 				continue;
 			}
 
-			//Pontuacao
+			//5.2 - Substituição de pontuação
 			if(pontuacao_pt.indexOf(partes[i])>=0){
 				nova += pontuacao_qu[pontuacao_pt.indexOf(partes[i])];
 				continue;
 			}
 
-			//Ditongos nasais
+			//5.3 - Substituição de ditongo nasais (ão, ãe, õe)
 			if(partes.length>2 && i+2<partes.length){
 				if(partes[i]+partes[i+1]+partes[i+2]=='\xE3os'){
 					nova+='.CiP';
@@ -168,13 +220,15 @@
 				}
 			}
 
-
+			// 5.4 - Substituição de excessões de inicio de palavra (s, z, g, h)
 			if(i==0){
 				if(inicio_pt.indexOf(partes[i])>=0){
 					nova += inicio_qu[inicio_pt.indexOf(partes[i])];
 					continue;
 				}
 			}
+
+			//5.5 - Substituição de excessões de meio de palavra (ch, nh, rr, lh, gu, qu, /)
 			if(i<partes.length){
 				if(execoes_pt.indexOf(partes[i]+partes[i+1])>=0){
 					nova += execoes_qu[execoes_pt.indexOf(partes[i]+partes[i+1])];
@@ -183,6 +237,7 @@
 				}
 			}
 
+			//5.6 - Tratamento da consoante Z, pois difere se acompanhado por vogal ou consoante
 			if(partes[i]=='z'){
 				if(vogais_pt.indexOf(partes[i-1])>-1){
 					nova+='k';
@@ -191,10 +246,10 @@
 				}
 				continue;
 			}
-			//Consoantes
+			//5.7 - Tratamento de consoantes, com tratamento para Hiato ex.: sair
 			if(consoantes_pt.indexOf(partes[i])>=0){
 				nova += consoantes_qu[consoantes_pt.indexOf(partes[i])];
-				//SAIR
+				//Hiato
 				if((i+3) < partes.length && (vogais_pt.indexOf(partes[i+1])>=0 && (vogais_pt.indexOf(partes[i+2])>=0) &&  ('r').indexOf(partes[i+3])>=0)){
 					nova += vogais_qu[vogais_pt.indexOf(partes[i+1])];
 					nova += '`'+vogais_qu[vogais_pt.indexOf(partes[i+2])];
@@ -203,7 +258,7 @@
 					continue;
 				}
 
-				//Saiu
+				//hiato saiu
 				if((i+3) < partes.length && (vogais_pt.indexOf(partes[i+1])>=0 && (vogais_pt.indexOf(partes[i+2])>=0 &&  vogais_pt.indexOf(partes[i+3])>=0))){
 					nova += vogais_qu[vogais_pt.indexOf(partes[i+1])];
 					if(ditongos_pt.indexOf(partes[i+2]+partes[i+3])>=0){
@@ -220,7 +275,7 @@
 				continue;
 			}
 
-			//Vogais
+			//5.8 - Tratamento de vogais, que é dividido por partes
 			if(vogais_pt.indexOf(partes[i])>=0){
 
 				
@@ -232,12 +287,8 @@
 				}
 				
 				if((i+3)<partes.length){
-					//NASAIS
+					//5.8.1 - Silabas nasais <vogal>+</m/ ou /n/> +<consoante>
 					if((partes[i+1]=='m' || partes[i+1]=='n') && consoantes_pt.indexOf(partes[i+2])>-1 ) {
-
-						//te nto
-						//qR qFN
-						//vogal
 						if(i==0){
 							nova='`';
 						}
@@ -262,7 +313,7 @@
 				}
 
 				if(i==0){
-					//Ditongos
+					//5.8.2 - Tratamento de ditongos não nasais (ai, ou, au, ao, etc)
 					if((i+1)<partes.length &&  vogais_pt.indexOf(partes[i+1]) >= 0){
 						if(ditongos_pt.indexOf(partes[i]+partes[i+1])>=0){
 							nova += ditongos_qu[ditongos_pt.indexOf(partes[i]+partes[i+1])]
@@ -277,7 +328,7 @@
 					continue;
 				}
 
-				//sair hiato
+				//5.8.3 - Tratamento de hiatos
 				if(((i+2) < partes.length) && (consoantes_pt.indexOf(partes[i-1])>=0 || inicio_pt.indexOf(partes[i-1]) >= 0 ) && (vogais_pt.indexOf(partes[i]) >= 0 && vogais_pt.indexOf(partes[i+1]) >= 0 )  && ('r').indexOf(partes[i+2]) >=0 ){
 					nova += vogais_qu[vogais_pt.indexOf(partes[i])];
 					nova += '`'+vogais_qu[vogais_pt.indexOf(partes[i+1])];
@@ -286,7 +337,7 @@
 					continue;
 				}
 
-				//
+				//5.8.3 - Tratamento de hiatos
 				if(((i+2) < partes.length) && (consoantes_pt.indexOf(partes[i-1])>=0 || inicio_pt.indexOf(partes[i-1]) >= 0 ) && (vogais_pt.indexOf(partes[i]) >= 0 && vogais_pt.indexOf(partes[i+1]) >= 0 )  && vogais_pt.indexOf(partes[i+2]) >= 0  ){
 					nova += vogais_qu[vogais_pt.indexOf(partes[i])];
 					if(ditongos_pt.indexOf(partes[i+1]+partes[i+2])>=0){
@@ -299,7 +350,7 @@
 					continue;
 				}
 
-				//Ditongos
+				////5.8.2 - Tratamento de ditongos não nasais (ai, ou, au, ao, etc)
 				if((i+1)<partes.length &&  vogais_pt.indexOf(partes[i+1]) >= 0){
 					if(ditongos_pt.indexOf(partes[i]+partes[i+1])>=0){
 						nova += ditongos_qu[ditongos_pt.indexOf(partes[i]+partes[i+1])];
@@ -315,12 +366,9 @@
 				nova += vogais_qu[vogais_pt.indexOf(partes[i])];
 				continue;
 
-
-				// if(){
-
-				// }
 			}
 
+			// 6 - Tratamento de \n (ENTER)
 			if(partes[i]=='\n'){
 				nova+='<br/>'
 				continue;
